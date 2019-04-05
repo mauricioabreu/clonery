@@ -1,1 +1,1 @@
-from .clone import clone
+from .clone import clone, UnsavedObject

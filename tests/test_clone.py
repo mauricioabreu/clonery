@@ -1,3 +1,5 @@
+import pytest
+
 import clonery
 from .models import DummyModel, DummyModelWithForeignKey
 
@@ -18,3 +20,9 @@ def test_clone_relationship():
 
     assert DummyModelWithForeignKey.objects.count() == 2
     assert DummyModel.objects.count() == 2
+
+
+def test_clone_unsaved_instance():
+    original = DummyModel(text="it must be cloned")
+    with pytest.raises(clonery.UnsavedObject):
+        clonery.clone(original)
