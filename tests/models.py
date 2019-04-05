@@ -8,3 +8,10 @@ class DummyModel(models.Model):
         max_length=100,
         verbose_name="char field"
     )
+
+
+class DummyModelWithForeignKey(models.Model):
+    """Model to test foreign key relantionships."""
+
+    number = models.IntegerField()
+    related = models.ForeignKey(DummyModel, on_delete=models.CASCADE)

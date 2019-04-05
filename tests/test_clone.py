@@ -1,5 +1,5 @@
 import clonery
-from .models import DummyModel
+from .models import DummyModel, DummyModelWithForeignKey
 
 
 def test_clone():
@@ -9,3 +9,12 @@ def test_clone():
 
     cloned = DummyModel.objects.get(id=2)
     assert cloned.text == "it must be cloned"
+
+
+def test_clone_relationship():
+    model_to_relate = DummyModel.objects.create(text="it must be cloned")
+    related_instance = DummyModelWithForeignKey.objects.create(related=model_to_relate, number=42)
+    clonery.clone(related_instance)
+
+    assert DummyModelWithForeignKey.objects.count() == 2
+    assert DummyModel.objects.count() == 2
