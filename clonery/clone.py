@@ -8,6 +8,14 @@ def clone(instance):
             related_instance.pk = None
             related_instance.id = None
             related_instance.save()
+        if field.many_to_many and not field.auto_created:
+            related_manager = getattr(instance, field.name)
+            related_instances = related_manager.all()
+            for related_instance in related_instances:
+                related_instance.pk = None
+                related_instance.id = None
+                related_instance.save()
+
     instance.pk = None
     instance.id = None
     instance.save()
