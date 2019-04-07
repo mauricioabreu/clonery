@@ -1,27 +1,31 @@
 from django.db import models
 
 
-class DummyModel(models.Model):
+class Album(models.Model):
     """Base model for testing."""
 
-    text = models.CharField(
+    name = models.CharField(
         max_length=100,
-        verbose_name="char field"
+        verbose_name="Album name"
     )
 
 
-class DummyModelWithForeignKey(models.Model):
+class Track(models.Model):
     """Model to test foreign key relationships."""
 
+    title = models.CharField(
+        max_length=100,
+        verbose_name="Track title"
+    )
     number = models.IntegerField()
-    related = models.ForeignKey(DummyModel, on_delete=models.CASCADE)
+    album = models.ForeignKey(Album, on_delete=models.CASCADE)
 
 
-class DummyModelManyToMany(models.Model):
+class Discography(models.Model):
     """Model to test many to many relationships."""
 
-    text = models.CharField(
+    title = models.CharField(
         max_length=100,
-        verbose_name="char field"
+        verbose_name="Discography title"
     )
-    related = models.ManyToManyField(DummyModel)
+    related = models.ManyToManyField(Album)

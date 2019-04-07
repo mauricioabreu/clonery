@@ -2,40 +2,40 @@ import pytest
 
 import clonery
 from .models import (
-    DummyModel, DummyModelWithForeignKey, DummyModelManyToMany)
+    Album, Track, Discography)
 
 
 def test_clone():
-    original = DummyModel.objects.create(text="it must be cloned")
-    clonery.clone(original)
-    assert DummyModel.objects.count() == 2
+    album = Album.objects.create(name="Fear of the dark")
+    clonery.clone(album)
+    assert Album.objects.count() == 2
 
-    cloned = DummyModel.objects.get(id=2)
-    assert cloned.text == "it must be cloned"
+    cloned = Album.objects.get(id=2)
+    assert cloned.name == "Fear of the dark"
 
 
 def test_clone_relationship():
-    model_to_relate = DummyModel.objects.create(text="it must be cloned")
-    related_instance = DummyModelWithForeignKey.objects.create(related=model_to_relate, number=42)
-    clonery.clone(related_instance)
+    album = Album.objects.create(name="Fear of the dark")
+    track = Track.objects.create(album=album, title="Wasting love", number=9)
+    clonery.clone(track)
 
-    assert DummyModelWithForeignKey.objects.count() == 2
-    assert DummyModel.objects.count() == 2
+    assert Track.objects.count() == 2
+    assert Album.objects.count() == 2
 
 
 def test_clone_many_to_many():
-    one_thing = DummyModel.objects.create(text="one relation")
-    another_thing = DummyModel.objects.create(text="another relation")
-    many_to_many = DummyModelManyToMany.objects.create(text="i have a lot of related objects")
-    many_to_many.related.add(one_thing)
-    many_to_many.related.add(another_thing)
+    worst_album = Album.objects.create(name="Virtual XI")
+    best_album = Album.objects.create(name="The number of the beast")
+    discography = Discography.objects.create(title="The best and the worst of Iron Maiden")
+    discography.related.add(worst_album)
+    discography.related.add(best_album)
 
-    clonery.clone(many_to_many)
-    assert DummyModelManyToMany.objects.count() == 2
-    assert DummyModel.objects.count() == 4
+    clonery.clone(discography)
+    assert Discography.objects.count() == 2
+    assert Album.objects.count() == 4
 
 
 def test_clone_unsaved_instance():
-    original = DummyModel(text="it must be cloned")
+    album = Album(name="Powerslave")
     with pytest.raises(clonery.UnsavedObject):
-        clonery.clone(original)
+        clonery.clone(album)
