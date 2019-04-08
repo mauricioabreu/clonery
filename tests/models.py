@@ -17,7 +17,7 @@ class Track(models.Model):
         max_length=100,
         verbose_name="Track title"
     )
-    number = models.IntegerField()
+    number = models.IntegerField(default=0)
     album = models.ForeignKey(Album, on_delete=models.CASCADE)
 
 

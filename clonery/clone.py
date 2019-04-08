@@ -1,8 +1,14 @@
-def clone(instance):
+def clone(instance, **options):
+    ignored = options.get('ignored', [])
+
     if not instance.pk:
         raise UnsavedObject
 
     for field in instance._meta.get_fields():
+        if field.name in ignored:
+            # TODO(mauricioabreu): what happens if there is no default?
+            setattr(instance, field.attname, field.get_default())
+
         if field.many_to_one:
             related_instance = getattr(instance, field.name)
             related_instance.pk = None

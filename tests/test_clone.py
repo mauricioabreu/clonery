@@ -39,3 +39,13 @@ def test_clone_unsaved_instance():
     album = Album(name="Powerslave")
     with pytest.raises(clonery.UnsavedObject):
         clonery.clone(album)
+
+
+def test_ignore_fields():
+    album = Album.objects.create(name="Fear of the dark")
+    track = Track.objects.create(album=album, title="Wasting love", number=9)
+
+    clonery.clone(track, ignored=["number"])
+
+    cloned = Track.objects.get(id=2)
+    assert cloned.number == 0
